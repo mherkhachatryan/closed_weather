@@ -11,6 +11,7 @@ if (longitude == True) and (latitude == True):
     st.text("We are showing requested data")
 
 
+
 #st.text("We are showing requested data")
 #st.balloons()
 #print(longitude, latitude)
