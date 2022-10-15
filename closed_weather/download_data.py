@@ -1,8 +1,8 @@
 import requests
-import json
+import pandas as pd
 
 
-def get_weather_info(long, lat, save=True):
+def get_weather_info(long, lat):
     wheather_json = requests.get(f'https://api.open-meteo.com/v1/forecast?latitude={lat}'
                                  f'&timezone=GMT'
                                  f'&longitude={long}&daily=temperature_2m_max&'
@@ -10,9 +10,15 @@ def get_weather_info(long, lat, save=True):
                                  f'&daily=sunrise'
                                  f'&daily=sunset').json()
 
-    if save:
-        with open('data.json', 'w') as json_file:
-            json.dump(wheather_json, json_file)
+    data = pd.DataFrame(wheather_json)
+
+    data_transformed = data.loc[["time", "temperature_2m_max", "temperature_2m_min",
+                                 "sunrise", "sunset"], "daily"]
+
+    data_transformed = data_transformed.apply(lambda x: pd.Series(x)).T
+
+    return data_transformed
 
 
-get_weather_info(44.3, 42, save=True)
+data = get_weather_info(44.3, 42)
+print(data)
